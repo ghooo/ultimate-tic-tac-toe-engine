@@ -28,8 +28,8 @@ int main(int argc, char **argv){
 		return 1;
 	}
 	std::vector<std::string> commands;
-	commands.push_back(string(commands[1]));
-	commands.push_back(string(commands[2]));
+	commands.push_back(std::string(commands[1]));
+	commands.push_back(std::string(commands[2]));
 	Engine engine(commands);
 	engine.setUpEngine();
 	engine.runEngine();

@@ -58,6 +58,18 @@ Field::Field() {
 void Field::clearBoard() {
 	board_ = std::vector<std::vector<int> >(9, std::vector<int>(9,0));
 	macroBoard_ = std::vector<std::vector<int> >(3, std::vector<int>(3,0));
+	allowedMacroBoard_ = std::vector<std::vector<int> >(3, std::vector<int>(3,-1));
+}
+
+std::string conv(const std::vector<std::vector<int> > &vv) {
+		std::string ret;
+		for(int i = 0; i < vv.size(); i++) {
+			for(int j = 0; j < vv[i].size(); j++) {
+				if(ret.size()) ret += ",";
+				ret += std::to_string(vv[i][j]);
+			}
+		}
+		return ret;
 }
 
 bool Field::addMark(int row, int col, int playerId) {
@@ -66,17 +78,19 @@ bool Field::addMark(int row, int col, int playerId) {
 	int macroRow = row/3, macroCol = col/3;
 	if(allowedMacroBoard_[macroRow][macroCol] != -1) return false;
 	board_[row][col] = playerId;
+
 	macroBoard_[macroRow][macroCol] = checkBoard(board_, macroRow, macroCol);
 	updateAllowedMacroBoard(row-macroRow*3, col-macroCol*3);
+
 	return true;
 }
 
 void Field::updateAllowedMacroBoard(int nextMacroRow, int nextMacroCol) {
 	for(int row = 0; row < 3; row++) {
 		for(int col = 0; col < 3; col++) {
-			if(board_[row][col]) {
-				allowedMacroBoard_[row][col] = board_[row][col];
-			} else if(board_[nextMacroRow][nextMacroCol]) {
+			if(macroBoard_[row][col]) {
+				allowedMacroBoard_[row][col] = macroBoard_[row][col];
+			} else if(macroBoard_[nextMacroRow][nextMacroCol]) {
 				allowedMacroBoard_[row][col] = -1;
 			} else if(row == nextMacroRow && col == nextMacroCol) {
 				allowedMacroBoard_[row][col] = -1;
@@ -91,21 +105,29 @@ int Field::getWinner() {
 	return checkBoard(macroBoard_,0,0);
 }
 
-std::string conv(const std::vector<std::vector<int> > &vv) {
-		std::string ret;
-		for(int i = 0; i < vv.size(); i++) {
-			for(int j = 0; j < vv[i].size(); j++) {
-				if(ret.size()) ret += ",";
-				ret += std::to_string(vv[i][j]);
-			}
-		}
-		return ret;
-}
-
 std::string Field::boardString() const {
 	return conv(board_);
 }
 std::string Field::allowedMacroBoardString() const {
 	return conv(allowedMacroBoard_);
+}
+std::string Field::printableBoardString() {
+	std::string ret = "";
+	for(int i = 0; i < board_.size(); i++) {
+		for(int j = 0; j < board_[0].size(); j++) {
+
+			if(board_[i][j] == 1) ret += " X ";
+			else if(board_[i][j] == 2) ret += " O ";
+			else ret += "   ";
+			if(j%3 == 2) ret += "|";
+			else ret += ' ';
+		}
+		ret += "\n";
+		for(int j = 0; j < board_[0].size()*4; j++)
+			if(i%3==2) ret += "-";
+			else ret += " ";
+		ret += "\n";
+	}
+	return ret;
 }
 

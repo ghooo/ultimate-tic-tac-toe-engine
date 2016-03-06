@@ -37,8 +37,8 @@ void AbstractPlayer::setTimBank(timell timeBank) {
 	timeBank_ = timeBank;
 }
 void AbstractPlayer::updateTimeBank(timell timeElapsed) {
-	timeBank_ = max(timell(), timeBank_-timeElapsed);
-	timeBank_ = min(timeBank_+timePerMove_, maxTimeBank_);
+	timeBank_ = std::max(timell(), timeBank_-timeElapsed);
+	timeBank_ = std::min(timeBank_+timePerMove_, maxTimeBank_);
 }
 void AbstractPlayer::sendSetting(std::string type, std::string value) {
 	sendLine("settings " + type + " " + value);
@@ -47,21 +47,21 @@ void AbstractPlayer::sendSetting(std::string type, int value) {
 	sendLine("settings " + type + " " + std::to_string(value));
 }
 void AbstractPlayer::sendUpdate(std::string type, AbstractPlayer* player, std::string value) {
-	sendLine("update " + type + " " + player->getName() + " " + value);
+	sendLine("update game " + type + " " + player->getName() + " " + value);
 }
 void AbstractPlayer::sendUpdate(std::string type, AbstractPlayer* player, int value) {
-	sendLine("update " + type + " " + player->getName() + " " + std::to_string(value));	
+	sendLine("update game " + type + " " + player->getName() + " " + std::to_string(value));	
 }
 void AbstractPlayer::sendUpdate(std::string type, std::string value) {
-	sendLine("update " + type + " " + value);
+	sendLine("update game " + type + " " + value);
 }
 void AbstractPlayer::sendUpdate(std::string type, int value) {
-	sendLine("update " + type + " " + std::to_string(value));
+	sendLine("update game " + type + " " + std::to_string(value));
 }
 std::string AbstractPlayer::requestMove(std::string moveType) {
 	clock_t start = clock();
 
-	sendLine("action " + moveType + " " + to_string(timeBank_));
+	sendLine("action " + moveType + " " + std::to_string(timePerMove_));
 
 	std::string response = bot_->getResponse(timeBank_);
 

@@ -23,9 +23,13 @@ Simulator::Simulator():AbstractGame(){
 	field_ = new Field();
 }
 Simulator::~Simulator() {
-	for(int i = 0; i < ioplayers_.size(); i++) {
+	// HACK: have to delete ioplayers in reverse order.
+	for(int i = ioplayers_.size()-1; i >= 0; i--) {
 		delete ioplayers_[i];
 	}
+	// for(int i = 0; i < ioplayers_.size(); i++) {
+	// 	delete ioplayers_[i];
+	// }
 	for(int i = 0; i < players_.size(); i++) {
 		delete players_[i];
 	}
@@ -80,9 +84,9 @@ bool Simulator::playRound() {
 	return true;
 }
 bool Simulator::checkAndPlay(std::string response, Player *player) {
-	vector<string> parts = split(response,' ');
+	std::vector<std::string> parts = split(response,' ');
 	if(parts.size() >= 3 && parts[0] == "place_move") {
-		int row = stoi(parts[1]), col = stoi(parts[0]);
+		int row = stoi(parts[2]), col = stoi(parts[1]);
 		if(field_->addMark(row, col, player->getPlayerId())) {
 			playedGame_ += field_->boardString();
 			return true;

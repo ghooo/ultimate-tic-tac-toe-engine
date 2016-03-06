@@ -17,6 +17,7 @@
 
 #include <vector>
 #include <string>
+#include "helpers.h"
 
 #ifndef FIELD_H
 #define FIELD_H
@@ -34,6 +35,7 @@ public:
 	void updateAllowedMacroBoard(int nextMacroRow, int nextMacroCol);
 	std::string boardString() const;
 	std::string allowedMacroBoardString() const;
+	std::string printableBoardString();
 	int getWinner();
 };
 

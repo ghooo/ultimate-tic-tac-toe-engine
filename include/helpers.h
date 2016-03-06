@@ -20,14 +20,13 @@ typedef long long timell;
 #ifndef HELPERS_CPP
 #define HELPERS_CPP
 
-#define PRINT(x) std::cout << x << std::endl
-#define PRINTI(type,x) std::cerr << std::endl << type << #x << ": " << x << std::endl
-#define PRINTE(type,x) std::cerr << std::endl << type << x << std::endl
+#define PRINT(x) std::cout << std::endl << x 
+#define PRINTI(type,x) std::cerr << std::endl << type << #x << ": " << x
+#define PRINTE(type,x) std::cerr << std::endl << type << x
 #define ENABLE_DEBUGGING
 #ifdef ENABLE_DEBUGGING
 
 #include <iostream>
-using namespace std;
 #define DEBUG(x) PRINT("DEBUG - ", x)
 
 #else
@@ -39,7 +38,6 @@ using namespace std;
 #define ENABLE_INFO
 #ifdef ENABLE_INFO
 #include <iostream>
-using namespace std;
 #define INFO(x) PRINTI("INFO -- ", x)
 
 #else 
@@ -51,7 +49,6 @@ using namespace std;
 #define ENABLE_ERROR
 #ifdef ENABLE_ERROR
 #include <iostream>
-using namespace std;
 #define ERROR(x) PRINTE("ERROR - ", x)
 
 #else 
