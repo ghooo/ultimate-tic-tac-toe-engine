@@ -37,6 +37,8 @@ public:
 	std::string allowedMacroBoardString() const;
 	std::string printableBoardString();
 	int getWinner();
+	bool isAllowedMacroBoardFull();
+	bool isBoardFull(int macroRow, int macroCol);
 };
 
 #endif //FIELD_H

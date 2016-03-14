@@ -13,18 +13,9 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-add_executable(runner ${SOURCES})
+add_executable(ultsimrunner ${SOURCES})
 
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-if(COMPILER_SUPPORTS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-elseif(COMPILER_SUPPORTS_CXX0X)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-else()
-        message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 find_package(CxxTest)
 if(CXXTEST_FOUND)
@@ -36,5 +27,5 @@ if(CXXTEST_FOUND)
 	list(REMOVE_ITEM testing_sources ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 
     set(CXXTEST_TESTGEN_INTERPRETER) # only use this if using CXXTEST_ADD_TEST
-    CXXTEST_ADD_TEST(engine_test tests/test.cc  ${HEADERS} ${testing_sources} ${TESTS})
+    CXXTEST_ADD_TEST(tester tests/test.cc  ${HEADERS} ${testing_sources} ${TESTS})
 endif()

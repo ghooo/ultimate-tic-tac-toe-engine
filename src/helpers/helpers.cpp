@@ -17,6 +17,9 @@
 
 #include "helpers.h"
 
+bool __DEBUG_GAME_INFO__ = false;
+bool __FIXEDSEED__ = false;
+int __NUMBEROFGAMES__ = 0;
 void split(const std::string &s, char delim, std::vector<std::string> &elems) {
 	std::stringstream ss(s);
 	std::string item;

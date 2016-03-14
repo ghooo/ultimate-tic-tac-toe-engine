@@ -26,11 +26,12 @@
 class Engine {
 	std::vector<std::string> commands_;
 	Simulator* simulator_;
-	int gameResult_;
+	std::string gameResult_;
 public:
 	Engine(std::vector<std::string> commands) {
 		commands_ = commands;
 		simulator_ = new Simulator();
+		gameResult_ = "";
 	}
 	~Engine() {
 		delete simulator_;
@@ -45,13 +46,15 @@ public:
 		while(simulator_->playRound()) {
 			//
 		}
-		PRINT("stopping...");
 		AbstractPlayer *winner = simulator_->getWinner();
 		if(winner) {
-			PRINT("The winner is " + winner->getName());
+			gameResult_ = "The winner is " + winner->getName();
 		} else {
-			PRINT("The game is a draw.");
+			gameResult_ = "The game is a draw.";
 		}
+	}
+	std::string getGameResult() {
+		return gameResult_;
 	}
 };
 

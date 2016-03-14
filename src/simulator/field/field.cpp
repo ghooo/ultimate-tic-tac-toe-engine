@@ -84,20 +84,33 @@ bool Field::addMark(int row, int col, int playerId) {
 
 	return true;
 }
+bool Field::isBoardFull(int macroRow, int macroCol) {
+	for(int r = macroRow*3; r < macroRow*3+3; r++) {
+		for(int c = macroCol*3; c < macroCol*3+3; c++) {
+			if(board_[r][c] == 0) return false;
+		}
+	}
+	return true;
+}
 
 void Field::updateAllowedMacroBoard(int nextMacroRow, int nextMacroCol) {
-	for(int row = 0; row < 3; row++) {
-		for(int col = 0; col < 3; col++) {
-			if(macroBoard_[row][col]) {
-				allowedMacroBoard_[row][col] = macroBoard_[row][col];
-			} else if(macroBoard_[nextMacroRow][nextMacroCol]) {
-				allowedMacroBoard_[row][col] = -1;
-			} else if(row == nextMacroRow && col == nextMacroCol) {
-				allowedMacroBoard_[row][col] = -1;
-			} else {
-				allowedMacroBoard_[row][col] = 0;
+	if(macroBoard_[nextMacroRow][nextMacroCol] || isBoardFull(nextMacroRow,nextMacroCol)) {
+		for(int row = 0; row < 3; row++) {
+			for(int col = 0; col < 3; col++) {
+				if(macroBoard_[row][col] || isBoardFull(row,col)) {
+					allowedMacroBoard_[row][col] = macroBoard_[row][col];
+				} else {
+					allowedMacroBoard_[row][col] = -1;
+				}
 			}
 		}
+	} else {
+		for(int row = 0; row < 3; row++) {
+			for(int col = 0; col < 3; col++) {
+				allowedMacroBoard_[row][col] = macroBoard_[row][col];
+			}
+		}
+		allowedMacroBoard_[nextMacroRow][nextMacroCol] = -1;
 	}
 }
 
@@ -111,6 +124,7 @@ std::string Field::boardString() const {
 std::string Field::allowedMacroBoardString() const {
 	return conv(allowedMacroBoard_);
 }
+
 std::string Field::printableBoardString() {
 	std::string ret = "";
 	for(int i = 0; i < board_.size(); i++) {
@@ -131,3 +145,11 @@ std::string Field::printableBoardString() {
 	return ret;
 }
 
+bool Field::isAllowedMacroBoardFull() {
+	for(int r = 0; r < 3; r++) {
+		for(int c = 0; c < 3; c++) {
+			if(allowedMacroBoard_[r][c] == -1) return false;
+		}
+	}
+	return true;
+}

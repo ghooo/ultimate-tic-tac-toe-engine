@@ -59,7 +59,7 @@ bool Simulator::playRound() {
 		player->sendUpdate("round", roundNumber_);
 		player->sendUpdate("move", moveNumber_);
 
-		if(getWinner()) {
+		if(getWinner() || isDraw()) {
 			return false;
 		}
 		bool moveSuccess = false;
@@ -68,6 +68,14 @@ bool Simulator::playRound() {
 			player->sendUpdate("macroboard", field_->allowedMacroBoardString());
 			std::string response = player->requestMove("move");
 			if(checkAndPlay(response, player)) {
+				if(__DEBUG_GAME_INFO__) {
+					PRINTSTDERR("ROUND # "+std::to_string(roundNumber_));
+					PRINTSTDERR("MOVE  # "+std::to_string(moveNumber_));
+					PRINTSTDERR(field_->boardString());
+					PRINTSTDERR(field_->allowedMacroBoardString());
+					PRINTSTDERR(field_->printableBoardString());
+					PRINTSTDERR("");
+				}
 				// TODO: save moves to vector<Move>
 				moveSuccess = true;
 				player->sendUpdate("field", field_->boardString());
@@ -113,6 +121,10 @@ AbstractPlayer* Simulator::getWinner() {
 	}
 	return NULL;
 }
+bool Simulator::isDraw() {
+	return field_->isAllowedMacroBoardFull();
+}
+
 void Simulator::saveGame() {
 
 }

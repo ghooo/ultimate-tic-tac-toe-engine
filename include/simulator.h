@@ -43,6 +43,7 @@ public:
 	bool playRound();
 	int getFailedPlayerId();
 	AbstractPlayer* getWinner();
+	bool isDraw();
 	void saveGame();
 };
 #endif //SIMULATOR_H
