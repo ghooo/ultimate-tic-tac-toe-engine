@@ -61,7 +61,7 @@ void AbstractPlayer::sendUpdate(std::string type, int value) {
 std::string AbstractPlayer::requestMove(std::string moveType) {
 	clock_t start = clock();
 
-	sendLine("action " + moveType + " " + std::to_string(timePerMove_));
+	sendLine("action " + moveType + " " + std::to_string(timeBank_));
 
 	std::string response = bot_->getResponse(timeBank_);
 

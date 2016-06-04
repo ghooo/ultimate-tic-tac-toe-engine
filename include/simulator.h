@@ -29,8 +29,11 @@
 class Simulator: public AbstractGame {
 	std::vector<IOPlayer*> ioplayers_;
 	std::vector<Player*> players_;
-	const int MAXTIMEBANK = 10000;
-	const int TIMEPERMOVE = 1000;
+	// TheAIGames is faster 4 times than my machine.
+	// so it is 40000 instead of 10000 and
+	// 2000 instead of 500
+	const int MAXTIMEBANK = __TIMEBANK__; // 40000 
+	const int TIMEPERMOVE = __TIMEPERMOVE__;  // 2000
 	int moveNumber_;
 	Field *field_;
 	int failedPlayerId_;

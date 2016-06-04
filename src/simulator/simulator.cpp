@@ -68,7 +68,7 @@ bool Simulator::playRound() {
 			player->sendUpdate("macroboard", field_->allowedMacroBoardString());
 			std::string response = player->requestMove("move");
 			if(checkAndPlay(response, player)) {
-				if(__DEBUG_GAME_INFO__) {
+				if(__VERBOSE__) {
 					PRINTSTDERR("ROUND # "+std::to_string(roundNumber_));
 					PRINTSTDERR("MOVE  # "+std::to_string(moveNumber_));
 					PRINTSTDERR(field_->boardString());

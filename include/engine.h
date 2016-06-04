@@ -43,9 +43,12 @@ public:
 		simulator_->sendSettings();
 	}
 	void runEngine() {
-		while(simulator_->playRound()) {
-			//
-		}
+		do {
+			if(!__VERBOSE__) std::cerr << "\rROUND # " << simulator_->getRoundNumber() << std::flush;
+		}while(simulator_->playRound());
+
+		if(!__VERBOSE__) PRINTSTDERR("");
+
 		AbstractPlayer *winner = simulator_->getWinner();
 		if(winner) {
 			gameResult_ = "The winner is " + winner->getName();

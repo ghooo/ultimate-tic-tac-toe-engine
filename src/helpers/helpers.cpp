@@ -17,9 +17,12 @@
 
 #include "helpers.h"
 
-bool __DEBUG_GAME_INFO__ = false;
-bool __FIXEDSEED__ = false;
-int __NUMBEROFGAMES__ = 0;
+bool __VERBOSE__ = false;
+int __NUMBEROFGAMES__ = 1;
+int __TIMEBANK__ = 40000;
+int __TIMEPERMOVE__ = 2000;
+bool __ALTERNATE__ = false;
+
 void split(const std::string &s, char delim, std::vector<std::string> &elems) {
 	std::stringstream ss(s);
 	std::string item;

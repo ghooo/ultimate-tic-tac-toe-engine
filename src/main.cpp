@@ -21,61 +21,75 @@
 #include <vector>
 
 #include "engine.h"
+#include "cmdline.h"
 
-void reportErrorAndExit(std::string error) {
-	ERROR(error);
-	PRINTSTDERR("Usage: <exe> '<bot1 exe>' '<bot2 exe> [num-of-games] [--debug] [--fixedseed]");
-	exit(1);
-}
-void checkArgument(std::string s) {
-	if(s == "--debug") __DEBUG_GAME_INFO__ = true;
-	else if(s == "--fixedseed") __FIXEDSEED__ = true;
-	else if(isdigit(s[0])) __NUMBEROFGAMES__ = stoi(s);
-	else {
-		reportErrorAndExit("no paramter named " + s);
-	}
-}
-int main(int argc, char **argv){
-	if(argc < 3) {
-		reportErrorAndExit("insufficient number of parameters");
-	}
+int main(int argc, char *argv[]){
+	cmdline::parser p;
+	p.add<std::string>("bot1exe", '1', "first bot executable", true, "");
+	p.add<std::string>("bot2exe", '2', "first bot executable", true, "");
+	p.add("suppress", 's', "suppress bots error stream");
+	p.add<int>("numgames", 'n', "number of games", false, 1);
+	p.add("verbose", 'v', "show more details");
+	p.add<int>("timebank", 't', "set timebank in milliseconds", false, 40000);
+	p.add<int>("timepermove", 'm', "set timepermove in milliseconds", false, 2000);
+	p.add("alternate", 'a', "alternate players, switch players every game");
+	p.parse_check(argc, argv);
+
 	std::vector<std::string> commands;
-	commands.push_back(std::string(argv[1]));
-	commands.push_back(std::string(argv[2]));
-	
-	for(int i = 3; i < argc; i++) {
-		checkArgument(std::string(argv[i]));
+	commands.push_back(p.get<std::string>("bot1exe"));
+	commands.push_back(p.get<std::string>("bot2exe"));
+
+	__NUMBEROFGAMES__ = p.get<int>("numgames");
+	__VERBOSE__ = p.exist("verbose");
+	__TIMEBANK__ = p.get<int>("timebank");
+	__TIMEPERMOVE__ = p.get<int>("timepermove");
+	__ALTERNATE__ = p.exist("alternate");
+
+	std::vector<std::string> newCommands = commands;
+	if(p.exist("suppress")) {
+		for(auto &command:newCommands) {
+			command += " 2>/dev/null";
+		}
 	}
 
-	if(!__NUMBEROFGAMES__) {
-		Engine engine(commands);
+	if(!__VERBOSE__) PRINT("Add verbose option for more details.");
+
+
+	if(__NUMBEROFGAMES__ == 1) {
+		PRINT("Game: "+commands[0]+" vs "+commands[1]);
+		Engine engine(newCommands);
 		engine.setUpEngine();
 		engine.runEngine();
 		PRINT("Stopping...");
 		PRINT(engine.getGameResult());
 	} else {
+		std::map<std::string, int> idxs;
+		idxs[newCommands[0]]=0;
+		idxs[newCommands[1]]=1;
+
+		int scores[2] = {}, draws = 0;
 		int trials = __NUMBEROFGAMES__;
-		int wins1 = 0, wins2 = 0, draws = 0;
 		for(int i = 0; i < trials; i++) {
-			if(trials >= 10 && (i+1)%(trials/10) == 0) {
-				PRINT(std::to_string(i+1)+"/"+std::to_string(trials));
-			}
-			std::vector<std::string> newCommands = commands;
-			if(__FIXEDSEED__) {
-				newCommands[0] += " " + std::to_string(rand());
-				newCommands[1] += " " + std::to_string(rand());
-			}
+			PRINT("Game #"+std::to_string(i+1)+": "+commands[idxs[newCommands[0]]]+" vs "+commands[idxs[newCommands[1]]]);
 			Engine engine(newCommands);
 			engine.setUpEngine();
 			engine.runEngine();
+
 			std::string res = engine.getGameResult();
-			if(res.back() == '1') wins1++;
-			else if(res.back() == '2') wins2++;
+			if(res.back() == '1') scores[idxs[newCommands[0]]]++;
+			else if(res.back() == '2') scores[idxs[newCommands[1]]]++;
 			else draws++;
+
+			PRINT(res+" ... "+(res.back()=='1'?commands[idxs[newCommands[0]]]:(res.back()=='2'?commands[idxs[newCommands[1]]]:"")));
+			PRINT("");
+
+			if(__ALTERNATE__) {
+				swap(newCommands[0], newCommands[1]);
+			}
 		}
 		PRINT("Games played "+std::to_string(trials)+" games.");
-		PRINT("Player1 wins "+std::to_string(wins1)+ " games.");
-		PRINT("Player2 wins "+std::to_string(wins2)+ " games.");
+		PRINT(commands[0]+" won "+std::to_string(scores[0])+ " games.");
+		PRINT(commands[1]+" won "+std::to_string(scores[1])+ " games.");
 		PRINT("No. of draws "+std::to_string(draws)+ " games.");
 	}
     return 0;

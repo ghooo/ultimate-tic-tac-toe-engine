@@ -19,14 +19,16 @@ typedef long long timell;
 
 #ifndef HELPERS_CPP
 #define HELPERS_CPP
-extern bool __DEBUG_GAME_INFO__;
-extern bool __FIXEDSEED__;
+extern bool __VERBOSE__;
 extern int __NUMBEROFGAMES__;
+extern int __TIMEBANK__;
+extern int __TIMEPERMOVE__;
+extern bool __ALTERNATE__;
 
-#define PRINT(x) std::cout << std::endl << x 
-#define PRINTSTDERR(x) std::cerr << std::endl << x
-#define PRINTI(type,x) std::cerr << std::endl << type << #x << ": " << x
-#define PRINTE(type,x) std::cerr << std::endl << type << x
+#define PRINT(x) std::cout << x << std::endl 
+#define PRINTSTDERR(x) std::cerr << x << std::endl 
+#define PRINTI(type,x) std::cerr << type << #x << ": " << x << std::endl 
+#define PRINTE(type,x) std::cerr << type << x << std::endl 
 
 #define ENABLE_DEBUGGING
 #ifdef ENABLE_DEBUGGING
